@@ -1,0 +1,9 @@
+# Python / Python 字节码缓存
+__pycache__/
+*.pyc
+
+# snap2html.py Web 模式输出目录 / web-mode output dir
+/output/
+
+# 本地演示产物（不进仓库，另行部署）/ local demo artifacts (deployed separately, not in repo)
+/demo/

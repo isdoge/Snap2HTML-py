@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PAGE TITLE]</title>
+<script>
+	window.snap =
+	// [SNAPMETA]
+	{
+		title: "[PAGE TITLE JS]",
+		timestamp: [GEN TIMESTAMP],
+		numFiles: [NUM FILES],
+		numDirs: [NUM DIRS],
+		bytes: [TOT BYTES],
+		appName: "[APP NAME]",
+		appLink: "[APP LINK]",
+		appVersion: "[APP VER]",
+		dataVersion: [DATA VER],
+	}
+	// [/SNAPMETA]
+</script>
+<script>
+	/* Snap2HTML-py theme: generator-injected default ([VIEWER THEME]=auto/light/dark) + localStorage + system preference */
+	(function(){
+		var injected = "[VIEWER THEME]";
+		var saved = null;
+		try { saved = localStorage.getItem("s2h-viewer-theme"); } catch(e) {}
+		var t = (saved === "light" || saved === "dark") ? saved
+		      : (injected === "light" || injected === "dark") ? injected : "auto";
+		function resolve(x){
+			if (x === "light" || x === "dark") return x;
+			try { return matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"; } catch(e) { return "dark"; }
+		}
+		function apply(x){
+			document.documentElement.setAttribute("data-theme", resolve(x));
+		}
+		apply(t);
+		function eff(){
+			return document.documentElement.getAttribute("data-theme")
+			    || (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+		}
+		window.__viewerUpdateToggle = function(){
+			var el = document.getElementById("theme-toggle");
+			if (!el) return;
+			var cur = eff();
+			el.textContent = cur === "dark" ? "☀️" : "🌙";
+			el.title = cur === "dark" ? "切换到浅色主题" : "切换到深色主题";
+		};
+		window.__viewerToggleTheme = function(){
+			var next = eff() === "dark" ? "light" : "dark";
+			try { localStorage.setItem("s2h-viewer-theme", next); } catch(e) {}
+			apply(next);
+			window.__viewerUpdateToggle();
+		};
+		if (window.matchMedia) {
+			try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function(){ window.__viewerUpdateToggle(); }); } catch(e) {}
+		}
+		if (document.readyState !== "loading") window.__viewerUpdateToggle();
+		else document.addEventListener("DOMContentLoaded", window.__viewerUpdateToggle);
+	})();
+</script>
+<script>
+	// Options you can change to customize the snapshot
+	window.viewOptions = {
+		onlyLinkTheseExtensions: [],   // only link files with these extensions, e.g. ["jpg","png"]; [] = all
+		openLinksInNewTab: false,
+		treeExpandOnLoad: 1,           // depth to expand the treeview at load
+		treeWidth: 320,                // initial treeview width in px
+		largeSearchResultWarning: 20000,
+		showSearchLocationColumn: true,
+		highlightSearchResult: true,
+		scrollToActiveTreeviewNode: false,
+		dateFormatLocale: "zh-CN",     // zh display; the en switch uses en-US
+		dateFormatOptions: { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" }
+	}
+</script>
+<style>
+:root{
+	--bg:#10151b; --panel:#161d26; --panel2:#1b232e; --line:#263140; --ink:#dbe4ee; --dim:#8494a7;
+	--accent:#5aa7ff; --accent2:#2f6fd0; --ok:#3ecf8e; --warn:#ffb454; --err:#ff6b6b;
+	--grid:rgba(255,255,255,.022); --glow:#1a2430; --input-bg:#0c1117; --hover:#1d2733;
+	--code-ink:#a8b8ca; --mask:rgba(5,8,12,.72); --ring:rgba(90,167,255,.15); --mark:rgba(90,167,255,.28);
+	--mono:ui-monospace,"Cascadia Code",Consolas,"Courier New",monospace;
+}
+html[data-theme="light"]{
+	--bg:#f3f5f8; --panel:#ffffff; --panel2:#f8fafc; --line:#d9e0e8; --ink:#1e2833; --dim:#64748b;
+	--accent:#2f6fd0; --accent2:#1e57b8; --ok:#159d6b; --warn:#b97a12; --err:#d64545;
+	--grid:rgba(15,23,42,.035); --glow:#e8eef6; --input-bg:#ffffff; --hover:#eef3f9;
+	--code-ink:#44546a; --mask:rgba(15,23,42,.45); --ring:rgba(47,111,208,.15); --mark:rgba(47,111,208,.22);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+	background:
+		repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+		repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px),
+		radial-gradient(1200px 500px at 50% -10%,var(--glow) 0%,var(--bg) 60%);
+	color:var(--ink);
+	font:14px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+	display:flex;flex-direction:column;overflow:hidden;
+}
+body,.pane,input,button,th,td{transition:background-color .25s ease,color .25s ease,border-color .25s ease}
+
+/* --- header --- */
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:13px 20px 10px}
+.logo{font:700 18px/1 var(--mono);letter-spacing:.12em;white-space:nowrap}
+.logo b{color:var(--accent)}
+.cursor{display:inline-block;width:9px;height:17px;background:var(--accent);vertical-align:-2px;margin-left:2px;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.ver{font:11px var(--mono);color:var(--dim);border:1px solid var(--line);padding:2px 9px;border-radius:99px;white-space:nowrap}
+header .spacer{flex:1}
+.gh{color:var(--dim);display:inline-flex;align-items:center;padding:4px;border:1px solid var(--line);border-radius:50%;width:27px;height:27px;justify-content:center;text-decoration:none}
+.gh:hover{color:var(--accent);border-color:var(--accent)}
+.gh svg{width:15px;height:15px;fill:currentColor}
+.tbtn{background:transparent;border:1px solid var(--line);color:var(--dim);border-radius:8px;padding:4px 11px;font:600 12px var(--mono);cursor:pointer}
+.tbtn:hover{color:var(--accent);border-color:var(--accent)}
+.titlebox{padding:0 20px 12px}
+h1{font:600 17px/1.4 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;word-break:break-all}
+.stats{font:12px var(--mono);color:var(--dim)}
+.stats a{color:var(--dim)}
+
+/* --- layout --- */
+#content{flex:1;display:flex;min-height:0;padding:0 20px 16px}
+.pane{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.22)}
+#tree-pane{width:320px;min-width:0;overflow:auto;padding:10px 6px 14px;flex:none}
+#splitter{width:7px;flex:none;cursor:col-resize;position:relative}
+#splitter::after{content:"";position:absolute;left:3px;top:10px;bottom:10px;width:1px;background:var(--line)}
+#splitter:hover::after,#splitter.dragging::after{background:var(--accent);width:2px}
+#list-pane{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+#mobile-backdrop{display:none}
+@media (max-width:700px){
+	#content{padding:0 10px 10px}
+	#splitter{display:none}
+	#tree-pane{position:fixed;z-index:60;top:0;bottom:0;left:0;width:min(80vw,320px) !important;border-radius:0 12px 12px 0;display:none}
+	#tree-pane.open{display:block}
+	#mobile-backdrop.open{display:block;position:fixed;inset:0;background:var(--mask);z-index:55}
+	#tree-btn{display:inline-flex !important}
+}
+#tree-btn{display:none;align-items:center;justify-content:center}
+
+/* --- tree --- */
+.tree,.tree ul{list-style:none;font:13px/1.5 var(--mono)}
+.tree ul{margin-left:15px;border-left:1px solid var(--line);padding-left:4px}
+.tree .row{display:flex;align-items:center;gap:6px;padding:2.5px 8px 2.5px 4px;border-radius:7px;cursor:pointer;white-space:nowrap}
+.tree .row:hover{background:var(--hover)}
+.tree .row.active{background:var(--ring);color:var(--accent)}
+.tree .expander{width:14px;height:14px;flex:none;position:relative;cursor:pointer}
+.tree .expander::before{content:"";position:absolute;left:4px;top:3px;border:4.5px solid transparent;border-left:7px solid var(--dim);transform-origin:5.5px 4.5px;transition:transform .12s}
+.tree .expanded>.row .expander::before{transform:rotate(90deg);border-left-color:var(--accent)}
+.tree .expander.leaf{visibility:hidden}
+.tree .icon{width:15px;height:15px;flex:none;fill:var(--dim)}
+.tree .expanded>.row .icon,.tree .row.active .icon{fill:var(--accent)}
+.tree .lbl{overflow:hidden;text-overflow:ellipsis;color:var(--ink);text-decoration:none}
+.tree .row:hover .lbl{color:var(--accent)}
+.tree .row.active .lbl{color:var(--accent);font-weight:600}
+
+/* --- list --- */
+#breadcrumb{padding:12px 16px 10px;font:13px var(--mono);word-break:break-all;border-bottom:1px solid var(--line)}
+#breadcrumb a{color:var(--accent);text-decoration:none}
+#breadcrumb a:hover{text-decoration:underline}
+.path-divider{color:var(--dim);margin:0 3px}
+#search_indicator{display:none;padding:7px 16px;font:12.5px var(--mono);color:var(--warn)}
+#list-files{flex:1;overflow:auto;padding:4px 8px 10px}
+table{width:100%;border-collapse:collapse;font:13px var(--mono)}
+th{position:sticky;top:0;text-align:left;font-weight:600;font-size:12px;color:var(--dim);background:var(--panel);
+	padding:8px 10px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none;white-space:nowrap;z-index:2}
+th:hover{color:var(--accent)}
+th.sort-asc::after{content:" ▲";font-size:10px}
+th.sort-desc::after{content:" ▼";font-size:10px}
+td{padding:6.5px 10px;border-bottom:1px solid var(--line);vertical-align:bottom;white-space:nowrap}
+tbody tr:hover td{background:var(--hover)}
+td.name{word-break:break-all;white-space:normal}
+td.num,th.num{text-align:right}
+td.dim{color:var(--dim)}
+td .ficon{width:15px;height:15px;fill:var(--dim);vertical-align:-3px;margin-right:6px}
+td .ficon.dir{fill:var(--accent)}
+td a{color:var(--ink);text-decoration:none}
+td a:hover{color:var(--accent);text-decoration:underline}
+mark.highlight{background:var(--mark);color:inherit;border-radius:2px;padding:0 1px}
+#parent-folder{padding:6px 10px;font:13px var(--mono)}
+#parent-folder a{color:var(--accent);text-decoration:none;font-weight:600}
+#list-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 16px;border-top:1px solid var(--line);font:12.5px var(--mono);color:var(--dim)}
+#list-footer-info-label{min-width:0;overflow:hidden;text-overflow:ellipsis}
+#list-footer-open-export{background:var(--input-bg);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 13px;font:12.5px var(--mono);cursor:pointer;flex:none}
+#list-footer-open-export:hover{border-color:var(--accent);color:var(--accent)}
+
+/* --- export lightbox --- */
+#export-lightbox{position:fixed;inset:0;background:var(--mask);backdrop-filter:blur(2px);z-index:80;display:none;padding:24px}
+#export-lightbox.open{display:block}
+.modal{width:640px;max-width:100%;height:calc(100% - 48px);margin:0 auto;display:flex;flex-direction:column;
+	background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden}
+.export-options{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;padding:11px 16px;border-bottom:1px solid var(--line);font:12.5px var(--mono);color:var(--dim)}
+.export-options label{cursor:pointer;color:var(--ink)}
+.export-options input{accent-color:var(--accent)}
+.export-options .exp-close{margin-left:auto;color:var(--dim);text-decoration:none;font-weight:600}
+.export-options .exp-close:hover{color:var(--err)}
+#export-options-columns.off{opacity:.4;pointer-events:none}
+#export-text{flex:1;background:var(--input-bg);border:0;color:var(--code-ink);font:12.5px/1.6 var(--mono);padding:12px 16px;resize:none;outline:none}
+.export-save{padding:11px 16px;border-top:1px solid var(--line)}
+.export-save a{color:var(--accent);text-decoration:none;font:600 13px var(--mono);cursor:pointer}
+#export-tip{text-align:center;color:var(--dim);font:12px var(--mono);margin-top:10px}
+
+/* --- footer credit --- */
+footer{padding:8px 20px 12px;font:11.5px var(--mono);color:var(--dim);text-align:center}
+footer a{color:var(--dim)}
+footer code{font-family:var(--mono);color:var(--code-ink);background:var(--input-bg);padding:1px 6px;border-radius:5px;border:1px solid var(--line)}
+
+#loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:99;font:14px var(--mono);color:var(--dim)}
+.nonscript{padding:20px}
+input[type=search]{background:var(--input-bg);border:1px solid var(--line);border-radius:8px;color:var(--ink);font:13px var(--mono);padding:7px 11px;outline:none;width:210px}
+input[type=search]:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+.srch-help{cursor:help;color:var(--dim);border:1px solid var(--line);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font:12px var(--mono);flex:none}
+.srch-help:hover{color:var(--accent);border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div id="loading"><span>正在加载...</span><noscript><p class="nonscript">查看内容需要启用 JavaScript</p></noscript></div>
+
+<header>
+	<span class="logo">SNAP<b>2</b>HTML<span class="cursor"></span></span>
+	<span class="ver">listing · [APP VER]</span>
+	<span class="spacer"></span>
+	<form id="search_form" action="#" style="display:flex;align-items:center;gap:7px">
+		<input type="search" placeholder="搜索" id="search_text" title="搜索框" autocomplete="off">
+		<div class="srch-help" id="search-help">?</div>
+		<div id="theme-toggle" class="srch-help" onclick="window.__viewerToggleTheme && window.__viewerToggleTheme()">🌙</div>
+		<button type="button" class="tbtn" id="langBtn" title="Switch to English">EN</button>
+		<button type="button" class="tbtn" id="tree-btn" title="目录">☰</button>
+	</form>
+</header>
+
+<div class="titlebox">
+	<h1>[BODY TITLE]</h1>
+	<div class="stats">[NUM FILES] 个文件，[NUM DIRS] 个文件夹（<span id="tot_size">[TOT SIZE]</span>） · 由 <a href="[APP LINK]" target="_blank" rel="noopener">[APP NAME]</a> 生成于 [GEN DATE] [GEN TIME]</div>
+</div>
+
+<div id="content">
+	<div id="tree-pane" class="pane"><ul class="tree" id="treeview"></ul></div>
+	<div id="splitter" title="拖拽调整宽度"></div>
+	<div id="mobile-backdrop"></div>
+	<div id="list-pane" class="pane">
+		<div id="search_indicator"></div>
+		<div id="breadcrumb">&nbsp;</div>
+		<div id="list-files"></div>
+		<div id="list-footer">
+			<span id="list-footer-info-label"></span>
+			<button id="list-footer-open-export">导出当前视图</button>
+		</div>
+	</div>
+</div>
+
+<footer>由 <code>[APP NAME] [APP VER]</code> 生成 · <a href="[APP LINK]" target="_blank" rel="noopener">GitHub</a> · 原始来源 <a href="https://www.rlvision.com" target="_blank" rel="noopener">https://www.rlvision.com</a> · 数据格式 V[DATA VER]</footer>
+
+<div id="export-lightbox">
+	<div class="modal" id="export-content">
+		<div class="export-options">
+			<a href="#" id="export-close" class="exp-close"><b>×</b> 关闭</a>
+			<span id="exp-show-label">显示:</span>
+			<input type="checkbox" id="export_checkbox_files" checked><label for="export_checkbox_files">文件</label>
+			<input type="checkbox" id="export_checkbox_dirs"><label for="export_checkbox_dirs">文件夹</label>
+			<input type="checkbox" id="export_checkbox_path"><label for="export_checkbox_path">完整路径</label>
+		</div>
+		<div class="export-options">
+			<input type="radio" name="export-options" value="plain" id="export_checkbox_plain" checked><label for="export_checkbox_plain">纯文本</label>
+			<input type="radio" name="export-options" value="json" id="export_checkbox_json"><label for="export_checkbox_json">JSON</label>
+			<input type="radio" name="export-options" value="csv" id="export-checkbox-csv"><label for="export-checkbox-csv">CSV</label>
+			<span id="export-options-columns" class="off">
+				<span id="exp-cols-label">列:</span>
+				<input type="checkbox" id="export_checkbox_col_path"><label for="export_checkbox_col_path">路径</label>
+				<input type="checkbox" id="export_checkbox_col_type"><label for="export_checkbox_col_type">类型</label>
+				<input type="checkbox" id="export_checkbox_col_size"><label for="export_checkbox_col_size">大小</label>
+				<input type="checkbox" id="export_checkbox_col_date"><label for="export_checkbox_col_date">日期</label>
+			</span>
+		</div>
+		<textarea id="export-text" wrap="off" spellcheck="false"></textarea>
+		<div class="export-save"><a href="#" id="export-save">💾 保存</a></div>
+	</div>
+	<div id="export-tip">提示: 搜索 * 可导出全部文件和文件夹</div>
+</div>
+
+<script>
+"use strict";
+/* === Snap2HTML-py viewer engine (vanilla JS, zero dependencies) ===
+   Data format: V2 (see RedeMeDev.txt). window.snap keeps the documented console API.
+   Shared by all bundled themes; only the CSS/HTML skeleton differs. */
+
+const dirs = [];                       // all directory data, filled by p() in the data block at the bottom
+
+const DIRINDEX_FOLDER = 0, DIRINDEX_PARENTFOLDER = 1, DIRINDEX_SUBFOLDERS = 2, DIRINDEX_FILES = 3;
+const SUBINDEX_NAME = 0, SUBINDEX_SIZE = 1, SUBINDEX_DATE = 2;
+const FOLDER_SIZE_ERROR = "-1";
+const ROOTFOLDER_PARENT_ID = -1;
+const NUMBER_BASE = 36;
+
+/* --- i18n --- */
+const I18N = {
+	zh: {
+		search: "搜索",
+		searchTip: "搜索提示:\n\n可用 * 和 ? 作为通配符。* 匹配零个或多个字符，? 匹配恰好一个字符。\n\n在搜索词前加 > 只搜索当前文件夹，加 >> 搜索当前文件夹及子文件夹。\n\n加前缀 f: 只搜索文件，加 d: 只搜索文件夹.",
+		name: "名称", size: "大小", date: "修改时间", locCol: "位置",
+		searching: "正在搜索...", noResults: "未找到与 '{q}' 匹配的结果...",
+		searchResults: "搜索结果",
+		bigResult: "搜索到 {n} 个项目。\n\n显示大量内容会非常耗时，浏览器可能无响应甚至崩溃。\n\n要继续吗？",
+		folderShort: " 个文件夹", fileShort: " 个文件", folderOne: " 个文件夹", fileOne: " 个文件",
+		unreadable: "❌ 无法读取此文件夹的内容",
+		exportView: "导出当前视图", bytes: " 字节",
+		parentTip: "上级目录", treeTip: "目录", toEn: "Switch to English", toZh: "切换到中文",
+		expShow: "显示:", expCols: "列:", expClose: "关闭", expFiles: "文件", expDirs: "文件夹",
+		expFullPath: "完整路径", expPlain: "纯文本",
+		expTip: "提示: 搜索 * 可导出全部文件和文件夹",
+	},
+	en: {
+		search: "Search",
+		searchTip: "Search tips:\n\n* and ? work as wildcards. * matches zero or more characters, ? matches exactly one.\n\nPrefix with > to search the current folder only, >> to include subfolders.\n\nPrefix f: searches files only, d: folders only.",
+		name: "Name", size: "Size", date: "Modified", locCol: "Location",
+		searching: "Searching...", noResults: "No matches for '{q}'...",
+		searchResults: "Search results",
+		bigResult: "{n} items found.\n\nRendering this many rows is slow and may freeze the browser.\n\nContinue?",
+		folderShort: " folders", fileShort: " files", folderOne: " folder", fileOne: " file",
+		unreadable: "❌ Could not read the contents of this folder",
+		exportView: "Export current view", bytes: " B",
+		parentTip: "Parent folder", treeTip: "Folders", toEn: "Switch to English", toZh: "切换到中文",
+		expShow: "Show:", expCols: "Columns:", expClose: "Close", expFiles: "files", expDirs: "folders",
+		expFullPath: "full path", expPlain: "Plain text",
+		expTip: "Tip: search * to export all files and folders",
+	}
+};
+let lang = "zh";
+try { const l = localStorage.getItem("s2h-lang"); if (l === "en" || l === "zh") lang = l; } catch(e) {}
+function t(k){ return I18N[lang][k] !== undefined ? I18N[lang][k] : I18N.zh[k]; }
+let formatters = {};
+function makeFormatters(){
+	const opts = viewOptions.dateFormatOptions;
+	formatters.zh = window.Intl ? new Intl.DateTimeFormat(viewOptions.dateFormatLocale || undefined, opts) : { format: d => d.toLocaleString() };
+	formatters.en = window.Intl ? new Intl.DateTimeFormat("en-US", opts) : { format: d => d.toLocaleString() };
+}
+makeFormatters();
+function timestampToDate(ts){ return formatters[lang].format(new Date(ts * 1000)); }
+function bytesToSize(bytes){
+	const kb = 1024, mb = kb * 1024, gb = mb * 1024, tb = gb * 1024;
+	if (bytes >= 0 && bytes < kb) return bytes + t("bytes");
+	if (bytes < mb) return (bytes / kb).toFixed(0) + " KB";
+	if (bytes < gb) return (bytes / mb).toFixed(1) + " MB";
+	if (bytes < tb) return (bytes / gb).toFixed(2) + " GB";
+	return (bytes / tb).toFixed(2) + " TB";
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function debounce(func, wait){
+	let timeout;
+	return function(){
+		const context = this, args = arguments;
+		clearTimeout(timeout);
+		timeout = setTimeout(() => func.apply(context, args), wait);
+	};
+}
+function downloadToFile(content, fileName, mimeType){
+	const a = document.createElement("a");
+	a.href = URL.createObjectURL(new Blob([content], { type: mimeType || "application/octet-stream" }));
+	a.setAttribute("download", fileName);
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+}
+
+/* --- main --- */
+function run() {
+
+	const originalHash = location.hash.replace(/#/, "");
+	let selectedFolderId = "-1";
+	let currentView = [];          // items of the visible view (also used by export)
+	let currentDirId = -1;
+	let previousSearch = null;
+	let highlightQuery = "";
+	let highlightRe = null;
+	let sortState = null;          // {key, dir}
+	let showLocation = false;      // location column (search view)
+	let viewPrefixHtml = "";       // [..] row above the table
+
+	const $ = id => document.getElementById(id);
+	const treeEl = $("treeview"), listEl = $("list-files"), breadcrumbEl = $("breadcrumb"),
+	      infoEl = $("list-footer-info-label"), indicatorEl = $("search_indicator");
+
+	/* --- multi root support (V2) --- */
+	snap.isMultiRoot = false;
+	for (let id = 0; id < dirs.length; id++) {
+		if (dirs[id][DIRINDEX_PARENTFOLDER] === ROOTFOLDER_PARENT_ID && id !== 0) { snap.isMultiRoot = true; break; }
+	}
+	if (snap.isMultiRoot) {
+		dirs.unshift([snap.title + "*0*0", -1, "", { title: snap.title, numDirs: 0, numFiles: 0, sourceDir: "", linkRoot: "", timestamp: 0, totBytes: 0 }]);
+	}
+	snap.rootDirs = {};
+	snap.rootDirOffsets = [];
+	let currentRootDirIndex = 0;
+	for (let id = 0; id < dirs.length; id++) {
+		if (dirs[id][DIRINDEX_PARENTFOLDER] === ROOTFOLDER_PARENT_ID) {
+			currentRootDirIndex = id;
+			snap.rootDirs[id] = dirs[id].pop();
+		}
+		snap.rootDirOffsets.push(currentRootDirIndex);
+	}
+	if (snap.isMultiRoot) {
+		dirs[0][DIRINDEX_SUBFOLDERS] = Object.keys(snap.rootDirs).slice(1).join("*");
+		snap.numFiles = 0; snap.numDirs = 0;
+		for (const i in snap.rootDirs) { snap.numFiles += snap.rootDirs[i].numFiles; snap.numDirs += snap.rootDirs[i].numDirs; }
+	}
+	snap.linkFiles = false;
+	for (const i in snap.rootDirs) {
+		if (snap.rootDirs[i].linkRoot !== "") {
+			snap.linkFiles = true;
+			if (snap.rootDirs[i].linkRoot.endsWith("/") === false) snap.rootDirs[i].linkRoot += "/";
+		}
+		snap.rootDirs[i].searchLocationSubstringStart = 0;
+		if (snap.rootDirs[i].sourceDir.length > 3) {
+			snap.rootDirs[i].searchLocationSubstringStart = snap.rootDirs[i].sourceDir.substring(0, Math.max(snap.rootDirs[i].sourceDir.lastIndexOf("\\"), snap.rootDirs[i].sourceDir.lastIndexOf("/")) + 1).length;
+		}
+	}
+
+	/* --- data parsing (semantics identical to upstream) --- */
+	function isRootDir(id){ return Object.prototype.hasOwnProperty.call(snap.rootDirs, String(id)); }
+	function getRootDirDataForDir(dirId){
+		const index = snap.rootDirOffsets[dirId];
+		if (snap.rootDirs[index] === undefined) return { title: "", timestamp: 0, sourceDir: "", numFiles: 0, numDirs: 0, bytes: 0, linkRoot: "", searchLocationSubstringStart: 0 };
+		return snap.rootDirs[index];
+	}
+	function getParsedDir(dirId){
+		const dir = dirs[dirId][DIRINDEX_FOLDER].split("*");
+		const error = dir[SUBINDEX_SIZE] === FOLDER_SIZE_ERROR;
+		const parentId = Number(dirs[dirId][DIRINDEX_PARENTFOLDER]);
+		return {
+			id: dirId,
+			name: dir[SUBINDEX_NAME],
+			size: error ? 0 : parseInt(dir[SUBINDEX_SIZE], NUMBER_BASE),
+			date: parseInt(dir[SUBINDEX_DATE], NUMBER_BASE),
+			error: error,
+			parent: parentId === -1 ? 0 : parentId + snap.rootDirOffsets[dirId],
+		};
+	}
+	function getParsedSubdirs(rootDirId){
+		const result = [];
+		const subDirsData = dirs[rootDirId][DIRINDEX_SUBFOLDERS];
+		if (subDirsData !== "") {
+			for (const sid of subDirsData.split("*")) result.push(getParsedDir(Number(sid) + snap.rootDirOffsets[rootDirId]));
+		}
+		return result;
+	}
+	function getParsedFiles(dirId){
+		const result = [];
+		for (let i = DIRINDEX_FILES; i < dirs[dirId].length; i++) {
+			const file = dirs[dirId][i].split("*");
+			result.push({ name: file[SUBINDEX_NAME], size: parseInt(file[SUBINDEX_SIZE], NUMBER_BASE), date: parseInt(file[SUBINDEX_DATE], NUMBER_BASE) });
+		}
+		return result;
+	}
+	function getIdPathToDir(id){
+		const path = [id];
+		let parentId = id;
+		while (true) {
+			parentId = Number(dirs[parentId][DIRINDEX_PARENTFOLDER]);
+			if (parentId === ROOTFOLDER_PARENT_ID) break;
+			parentId += snap.rootDirOffsets[id];
+			path.push(parentId);
+		}
+		path.reverse();
+		return path;
+	}
+	function getFullPath(id){
+		const idPath = getIdPathToDir(id);
+		let sourceDir = getRootDirDataForDir(id).sourceDir;
+		const pathSep = sourceDir.indexOf("\\") !== -1 ? "\\" : "/";
+		if (sourceDir.endsWith(pathSep)) sourceDir = sourceDir.slice(0, -1);
+		const realPath = [sourceDir];
+		for (let i = 0; i < idPath.length; i++) {
+			if (i !== 0) realPath.push(getParsedDir(idPath[i]).name);
+		}
+		return realPath.join(pathSep);
+	}
+	function getRootDirRelativePath(id){
+		return getFullPath(id).substring(getRootDirDataForDir(id).sourceDir.length);
+	}
+	function createLinkedFile(filename, filenameHtml, pathFolderId){
+		const ext = filename.split(".").pop();
+		const linkRoot = decodeURI(getRootDirDataForDir(pathFolderId).linkRoot);
+		if (linkRoot !== "" && (viewOptions.onlyLinkTheseExtensions.length === 0 || viewOptions.onlyLinkTheseExtensions.indexOf(ext) !== -1)) {
+			const relativeRoot = getRootDirRelativePath(pathFolderId).replace(/\\/g, "/") + "/";
+			const fileLink = encodeURI(linkRoot + relativeRoot + filename).replace(/#/g, "%23");
+			const target = viewOptions.openLinksInNewTab ? " target='_blank'" : "";
+			return "<a href='" + fileLink + "' " + target + ">" + filenameHtml + "</a>";
+		}
+		return filenameHtml;
+	}
+	/* console API (documented in RedeMeDev.txt) */
+	snap.isRootDir = isRootDir;
+	snap.getParsedDir = getParsedDir;
+	snap.getParsedSubdirs = getParsedSubdirs;
+	snap.getParsedFiles = getParsedFiles;
+	snap.getFullPath = getFullPath;
+	snap.getRootDirRelativePath = getRootDirRelativePath;
+	snap.getIdPathToDir = getIdPathToDir;
+	snap.bytesToSize = bytesToSize;
+	snap.timestampToDate = timestampToDate;
+	snap.getRootDirDataForDir = getRootDirDataForDir;
+
+	/* --- treeview (lazy, zero dependencies) --- */
+	const DIR_SVG = "<svg class='icon' viewBox='0 0 16 16'><path d='M1.5 3.5A1.5 1.5 0 0 1 3 2h3.2c.4 0 .8.16 1.06.44l.86.86c.1.1.22.2.36.2H13a1.5 1.5 0 0 1 1.5 1.5v6.5A1.5 1.5 0 0 1 13 13H3a1.5 1.5 0 0 1-1.5-1.5v-8z'/></svg>";
+	const FILE_SVG = "<svg class='ficon' viewBox='0 0 16 16'><path d='M4.5 1h4.8c.27 0 .52.11.7.3l2.7 2.7c.19.18.3.43.3.7v9a1 1 0 0 1-1 1h-7.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z' opacity='.5'/><path d='M9.5 1.2V4.8h3.6z'/></svg>";
+	const nodeIndex = new Map();
+
+	function buildTreeNode(dirParsed, level){
+		const li = document.createElement("li");
+		li.dataset.id = dirParsed.id;
+		li.dataset.level = level;
+		const hasChildren = dirs[dirParsed.id][DIRINDEX_SUBFOLDERS] !== "";
+		const row = document.createElement("div");
+		row.className = "row";
+		row.innerHTML =
+			"<span class='expander" + (hasChildren ? "" : " leaf") + "'></span>" + DIR_SVG +
+			"<a class='lbl' href='#" + dirParsed.id + "' title='" + (dirParsed.error ? "" : esc(bytesToSize(dirParsed.size))) + "'>" + esc(dirParsed.name) + "</a>";
+		li.appendChild(row);
+		if (hasChildren) {
+			const ul = document.createElement("ul");
+			ul.style.display = "none";
+			li.appendChild(ul);
+		}
+		nodeIndex.set(String(dirParsed.id), li);
+		if (level < viewOptions.treeExpandOnLoad) expandTreeNode(li, true);
+		return li;
+	}
+	function ensureTreeNodeChildren(li){
+		const ul = li.querySelector("ul");
+		if (!ul || ul.dataset.built) return;
+		ul.dataset.built = "1";
+		const level = Number(li.dataset.level) + 1;
+		for (const sub of getParsedSubdirs(Number(li.dataset.id))) ul.appendChild(buildTreeNode(sub, level));
+	}
+	function expandTreeNode(li, flag){
+		const ul = li.querySelector("ul");
+		if (!ul) return;
+		if (flag) { ensureTreeNodeChildren(li); ul.style.display = ""; li.classList.add("expanded"); }
+		else { ul.style.display = "none"; li.classList.remove("expanded"); }
+	}
+	function activateTreeNode(id){
+		const prev = treeEl.querySelector(".row.active");
+		if (prev) prev.classList.remove("active");
+		const li = id === null ? null : nodeIndex.get(String(id));
+		if (li) {
+			li.querySelector(".row").classList.add("active");
+			if (viewOptions.scrollToActiveTreeviewNode) setTimeout(() => li.scrollIntoView({ block: "nearest" }), 60);
+		}
+	}
+	treeEl.addEventListener("click", function(e){
+		const li = e.target.closest("li[data-id]");
+		if (!li) return;
+		if (e.target.classList.contains("expander")) { expandTreeNode(li, !li.classList.contains("expanded")); return; }
+		if (e.target.closest("a.lbl")) { e.preventDefault(); showFolder(li.dataset.id); }
+	});
+	treeEl.addEventListener("dblclick", function(e){
+		const li = e.target.closest("li[data-id]");
+		if (li && li.querySelector("ul")) expandTreeNode(li, !li.classList.contains("expanded"));
+	});
+
+	const rootParsed = getParsedDir(0);
+	const rootLi = buildTreeNode(rootParsed, 0);
+	treeEl.appendChild(rootLi);
+	if (snap.isMultiRoot) expandTreeNode(rootLi, true);
+
+	function expandToFolder(id){
+		for (const pid of getIdPathToDir(Number(id))) {
+			const li = nodeIndex.get(String(pid));
+			if (li) expandTreeNode(li, true);
+		}
+		activateTreeNode(id);
+	}
+
+	/* --- list rendering --- */
+	const collator = () => new Intl.Collator(lang === "en" ? "en" : "zh");
+	function applySort(items){
+		if (!sortState) return items;
+		const key = sortState.key, dir = sortState.dir, c = collator();
+		return items.slice().sort((a, b) => {
+			let r;
+			if (key === "size" || key === "date") r = a[key] - b[key];
+			else if (key === "path") r = c.compare(a.location || "", b.location || "");
+			else r = c.compare(a.name, b.name);
+			return r * dir;
+		});
+	}
+	function thHtml(){
+		return "<th data-key='name'>" + t("name") + "</th>" +
+			(showLocation ? "<th data-key='path'>" + t("locCol") + "</th>" : "") +
+			"<th data-key='size' class='num'>" + t("size") + "</th>" +
+			"<th data-key='date' class='num'>" + t("date") + "</th>";
+	}
+	function buildRowHtml(it){
+		let nameTxt = esc(it.name);
+		if (highlightRe) nameTxt = nameTxt.replace(highlightRe, m => "<mark class='highlight'>" + m + "</mark>");
+		let nameHtml;
+		if (it.type === "dir") {
+			nameHtml = "<a href='#" + it.id + "' class='folder_link' title='" + esc(bytesToSize(it.size)) + "'>" + nameTxt + "</a>";
+		} else if (it.type === "file") {
+			nameHtml = snap.linkFiles ? createLinkedFile(it.name, nameTxt, it.dirId) : nameTxt;
+		} else {
+			nameHtml = "<a href='#" + it.id + "' class='folder_link'>" + nameTxt + "</a>";
+		}
+		const icon = it.type === "dir" ? DIR_SVG.replace("class='icon'", "class='ficon dir'") : (it.type === "file" ? FILE_SVG : "");
+		const locHtml = showLocation
+			? "<td class='dim'><a href='#" + (it.type === "dir" ? it.parentId : it.dirId) + "' class='folder_link'>" + esc(it.location) + "</a></td>"
+			: "";
+		return "<tr>" +
+			"<td class='name'>" + icon + nameHtml + "</td>" + locHtml +
+			"<td class='num dim'>" + (it.size < 0 ? "" : bytesToSize(it.size)) + "</td>" +
+			"<td class='num dim'>" + (it.type === "file" || it.type === "dir" ? timestampToDate(it.date) : "") + "</td>" +
+			"</tr>";
+	}
+	function renderTable(){
+		const sorted = sortState ? applySort(currentView) : currentView;
+		let html = viewPrefixHtml + "<table><thead><tr>" + thHtml() + "</tr></thead><tbody>";
+		for (const it of sorted) html += buildRowHtml(it);
+		listEl.innerHTML = html + "</tbody></table>";
+		listEl.scrollTop = 0;
+		for (const th of listEl.querySelectorAll("th")) {
+			if (sortState && sortState.key === th.dataset.key) th.classList.add(sortState.dir === 1 ? "sort-asc" : "sort-desc");
+		}
+	}
+	listEl.addEventListener("click", function(e){
+		const th = e.target.closest("th[data-key]");
+		if (th) {
+			const key = th.dataset.key;
+			if (sortState && sortState.key === key) sortState.dir = -sortState.dir;
+			else sortState = { key: key, dir: -1 };   // first click sorts descending, like upstream
+			renderTable();
+			return;
+		}
+		const link = e.target.closest("a.folder_link");
+		if (link) {
+			e.preventDefault();
+			const target = link.getAttribute("href").substring(1);
+			expandToFolder(target);
+			showFolder(target);
+		}
+	});
+
+	function showFolder(folderId){
+		folderId = String(folderId);
+		if (selectedFolderId === folderId) return false;
+		selectedFolderId = folderId;
+
+		$("search_text").value = "";
+		previousSearch = null;
+		highlightQuery = ""; highlightRe = null;
+		indicatorEl.style.display = "none";
+
+		const idNum = Number(folderId);
+		const idPath = getIdPathToDir(idNum);
+		let breadcrumbs = "";
+		if (snap.isMultiRoot && idNum === 0) breadcrumbs = "&nbsp;";
+		else {
+			for (let c = 0; c < idPath.length; c++) {
+				let dirName = getParsedDir(idPath[c]).name;
+				if (c === 0) dirName = dirName.replace(/:\//g, "");
+				breadcrumbs += (c === idPath.length - 1)
+					? esc(dirName)
+					: "<a href='#" + idPath[c] + "' class='folder_link'>" + esc(dirName) + "</a><span class='path-divider'>/</span>";
+			}
+		}
+		breadcrumbEl.innerHTML = breadcrumbs;
+
+		currentDirId = idNum;
+		const currentDir = getParsedDir(idNum);
+		const currentViewPath = getFullPath(idNum);
+
+		const hash = getRootDirRelativePath(idNum).replace(/%/g, "%25").replace(/#/g, "%23");
+		location.hash = idNum !== 0 ? "#" + idNum + "|" + hash : "#0";
+
+		viewPrefixHtml = "";
+		if (isRootDir(idNum) === false || (snap.isMultiRoot && idNum !== 0)) {
+			viewPrefixHtml = "<div id='parent-folder'><a href='#" + currentDir.parent + "' class='folder_link' title='" + t("parentTip") + "'>[..]</a></div>";
+		}
+
+		currentView = [];
+		if (currentDir.error) {
+			currentView.push({ type: "error", name: t("unreadable"), size: -1, date: 0 });
+		} else {
+			for (const sub of getParsedSubdirs(idNum)) {
+				currentView.push({ type: "dir", name: sub.name, id: sub.id, parentId: currentDir.parent, dirId: idNum, size: sub.size, date: sub.date, path: currentViewPath });
+			}
+			for (const f of getParsedFiles(idNum)) {
+				currentView.push({ type: "file", name: f.name, id: idNum, parentId: currentDir.parent, dirId: idNum, size: f.size, date: f.date, path: currentViewPath });
+			}
+		}
+		sortState = null;
+		showLocation = false;
+		renderTable();
+		activateTreeNode(idNum);
+
+		const countFiles = currentView.length - (currentDir.error ? 1 : 0) - getParsedSubdirs(idNum).length;
+		const countDirs = getParsedSubdirs(idNum).length;
+		const sizeFiles = currentView.reduce((s, i) => i.type === "file" ? s + i.size : s, 0);
+		const subdirTotSizes = currentView.reduce((s, i) => i.type === "dir" ? s + i.size : s, 0);
+		let sFiles, sDirs;
+		if (lang === "en") { sFiles = countFiles === 1 ? " file" : " files"; sDirs = countDirs === 1 ? " folder" : " folders"; }
+		else { sFiles = t("fileShort"); sDirs = t("folderShort"); }
+		infoEl.textContent = countDirs + sDirs + " (" + bytesToSize(subdirTotSizes) + "), " + countFiles + sFiles + " (" + bytesToSize(sizeFiles) + ")";
+		expandToFolder(idNum);
+		return false;
+	}
+
+	/* --- search --- */
+	let SearchData_Item = [], SearchData_Location = [], SearchData_LocationRaw = [], SearchData_LocationID = [], SearchData_IsDir = [];
+	let searchCacheBuilt = false;
+	function buildSearchCache(){
+		let n = 0;
+		for (let c = 1; c < dirs.length; c++) {
+			const dir = getParsedDir(c);
+			SearchData_Item[n] = [c, dir.name.toLowerCase(), dir.size, dir.date, dir.name];
+			SearchData_LocationRaw[n] = getFullPath(dir.parent);
+			SearchData_Location[n] = SearchData_LocationRaw[n].substring(getRootDirDataForDir(dir.parent).searchLocationSubstringStart);
+			SearchData_LocationID[n] = c;
+			SearchData_IsDir[n] = true;
+			n++;
+		}
+		for (let c = 0; c < dirs.length; c++) {
+			for (const f of getParsedFiles(c)) {
+				SearchData_Item[n] = [c, f.name.toLowerCase(), f.size, f.date, f.name];
+				SearchData_LocationRaw[n] = getFullPath(c);
+				SearchData_Location[n] = SearchData_LocationRaw[n].substring(getRootDirDataForDir(c).searchLocationSubstringStart);
+				SearchData_LocationID[n] = c;
+				SearchData_IsDir[n] = false;
+				n++;
+			}
+		}
+		searchCacheBuilt = true;
+	}
+	function doSearch(enterPressed){
+		const cs = {
+			query: $("search_text").value.toLowerCase().trim(),
+			onlyCurrentDir: false, onlyCurrentDirIncludingSubdirs: false, includeFiles: true, includeDirs: true
+		};
+		if (cs.query === "") {
+			if (previousSearch) {
+				previousSearch = null;
+				highlightQuery = ""; highlightRe = null;
+				selectedFolderId = "-1";
+				showFolder(currentDirId);
+			}
+			return;
+		}
+		if (cs.query.length <= 2 && !enterPressed) return;
+		let foundPrefix;
+		do {
+			foundPrefix = false;
+			if (cs.query.indexOf("f:") === 0) { cs.includeDirs = false; cs.query = cs.query.substr(2); foundPrefix = true; }
+			if (cs.query.indexOf("d:") === 0) { cs.includeFiles = false; cs.query = cs.query.substr(2); foundPrefix = true; }
+			if (cs.query.indexOf(">") === 0) {
+				cs.onlyCurrentDir = true; cs.query = cs.query.substr(1);
+				if (cs.query.indexOf(">") === 0) { cs.onlyCurrentDirIncludingSubdirs = true; cs.query = cs.query.substr(1); }
+				foundPrefix = true;
+			}
+		} while (foundPrefix);
+		if (previousSearch && JSON.stringify(cs) === previousSearch) return;
+		previousSearch = JSON.stringify(cs);
+
+		const numberOfItems = snap.numFiles + snap.numDirs;
+		if ((SearchData_Item.length === 0 && numberOfItems > 100000) || (searchCacheBuilt && numberOfItems > 500000)) {
+			indicatorEl.textContent = t("searching"); indicatorEl.style.display = "block";
+		}
+
+		setTimeout(function(){
+			activateTreeNode(null);
+			if (!searchCacheBuilt) buildSearchCache();
+
+			highlightQuery = (viewOptions.highlightSearchResult && cs.query !== "*" && cs.query !== "*.*" && cs.query.indexOf("*.") !== 0) ? cs.query : "";
+			const pattern = cs.query.replace(/[\-\[\]\/\{\}\(\)\+\.\\\^\$\|]/g, "\\$&").replace(/\*/g, ".*").replace(/\?/g, ".");
+			const queryRegEx = new RegExp(pattern);
+			highlightRe = highlightQuery ? new RegExp(pattern, "gi") : null;
+
+			const useLocation = viewOptions.showSearchLocationColumn;
+			const matches = [];
+			let countFiles = 0, countDirs = 0, sizeFiles = 0;
+			function checkLocation(cacheIndex){
+				if (SearchData_Location[cacheIndex] === "") return false;   // skip multi-root virtual root
+				if (!cs.onlyCurrentDir) return true;
+				const idPath = getIdPathToDir(SearchData_LocationID[cacheIndex]);
+				if (idPath.indexOf(currentDirId) === -1) return false;
+				if (idPath[idPath.length - 1] === currentDirId) {
+					return !(SearchData_IsDir[cacheIndex] && SearchData_LocationID[cacheIndex] === currentDirId);
+				}
+				if (SearchData_IsDir[cacheIndex] && idPath[idPath.length - 2] === currentDirId) return true;
+				return cs.onlyCurrentDirIncludingSubdirs;
+			}
+			function collect(cacheIndex){
+				if (!checkLocation(cacheIndex)) return;
+				const isDir = SearchData_IsDir[cacheIndex];
+				if (isDir && !cs.includeDirs) return;
+				if (!isDir && !cs.includeFiles) return;
+				if (isDir) countDirs++; else { countFiles++; sizeFiles += SearchData_Item[cacheIndex][2]; }
+				matches.push({
+					type: isDir ? "dir" : "file",
+					name: SearchData_Item[cacheIndex][4],
+					location: SearchData_Location[cacheIndex],
+					id: isDir ? SearchData_LocationID[cacheIndex] : -1,
+					parentId: getParsedDir(SearchData_LocationID[cacheIndex]).parent,
+					dirId: SearchData_LocationID[cacheIndex],
+					size: SearchData_Item[cacheIndex][2],
+					date: SearchData_Item[cacheIndex][3],
+					path: SearchData_LocationRaw[cacheIndex],
+				});
+			}
+			if (cs.query.indexOf("*") !== -1 || cs.query.indexOf("?") !== -1) {
+				for (let c = 0; c < SearchData_Item.length; c++) if (queryRegEx.test(SearchData_Item[c][1])) collect(c);
+			} else {
+				for (let c = 0; c < SearchData_Item.length; c++) if (SearchData_Item[c][1].indexOf(cs.query) !== -1) collect(c);
+			}
+
+			if (matches.length > viewOptions.largeSearchResultWarning && viewOptions.largeSearchResultWarning > 0) {
+				if (!confirm(t("bigResult").replace("{n}", matches.length))) { indicatorEl.style.display = "none"; return; }
+			}
+
+			currentView = matches;
+			sortState = null;
+			showLocation = useLocation;
+			viewPrefixHtml = "";
+			breadcrumbEl.innerHTML = t("searchResults") + " <span class='path-divider'>/</span>";
+			renderTable();
+			indicatorEl.style.display = "none";
+			if (countFiles === 0 && countDirs === 0) {
+				indicatorEl.textContent = t("noResults").replace("{q}", cs.query);
+				indicatorEl.style.display = "block";
+			}
+			let sFiles, sDirs;
+			if (lang === "en") { sFiles = countFiles === 1 ? " file" : " files"; sDirs = countDirs === 1 ? " folder" : " folders"; }
+			else { sFiles = t("fileShort"); sDirs = t("folderShort"); }
+			infoEl.textContent = countDirs + sDirs + ", " + countFiles + sFiles + " (" + bytesToSize(sizeFiles) + ")";
+		}, 50);
+	}
+
+	const searchDelay = (snap.numFiles + snap.numDirs > 1000) ? 1000 : 250;
+	const searchKeyPressHandler = debounce(function(keyEvent){
+		if (keyEvent) {
+			const keysToSkip = [9, 16, 17, 18, 35, 36, 37, 38, 39, 40];
+			if (keysToSkip.indexOf(keyEvent.keyCode) !== -1) return;
+			if (/Mobi/.test(navigator.userAgent)) return;
+			doSearch(false);
+		} else {
+			doSearch(true);
+		}
+	}, searchDelay);
+
+	$("search_form").addEventListener("submit", function(e){ e.preventDefault(); searchKeyPressHandler(null); doSearch(true); });
+	$("search_text").addEventListener("input", searchKeyPressHandler);
+	$("search_text").addEventListener("keydown", function(event){
+		if (event.isComposing || event.keyCode === 229) return;
+		if (event.key === "Enter") { event.preventDefault(); searchKeyPressHandler(null); doSearch(true); }
+	});
+	$("search-help").title = t("searchTip");
+	$("search-help").addEventListener("click", () => alert(t("searchTip")));
+	$("search_text").placeholder = t("search");
+
+	/* --- export --- */
+	function populateExport(){
+		const showFiles = $("export_checkbox_files").checked;
+		const showDirs = $("export_checkbox_dirs").checked;
+		const fullPath = $("export_checkbox_path").checked;
+		const colPath = $("export_checkbox_col_path").checked;
+		const colType = $("export_checkbox_col_type").checked;
+		const colSize = $("export_checkbox_col_size").checked;
+		const colDate = $("export_checkbox_col_date").checked;
+		const type = document.querySelector("#export-lightbox input[type='radio']:checked").value;
+
+		let csv = "\"Name\"";
+		if (colPath) csv += ",\"Path\"";
+		if (colType) csv += ",\"Type\"";
+		if (colSize) csv += ",\"Size\"";
+		if (colDate) csv += ",\"Date\"";
+		csv += "\n";
+
+		let plain = "";
+		const json = [];
+		for (const it of currentView) {
+			let path = "";
+			if (fullPath) {
+				path = it.path || "";
+				const sep = path.indexOf("\\") !== -1 ? "\\" : "/";
+				if (path !== "" && !path.endsWith(sep)) path += sep;
+			}
+			const jsonLine = { name: path + it.name };
+			if (colPath) jsonLine.path = it.path || "";
+			if (colType) jsonLine.type = it.type;
+			if (colSize) jsonLine.size = it.size;
+			if (colDate) jsonLine.date = new Date(it.date * 1000).toISOString();
+			let csvLine = "\"" + path + it.name + "\"";
+			if (colPath) csvLine += ",\"" + (it.path || "") + "\"";
+			if (colType) csvLine += ",\"" + it.type + "\"";
+			if (colSize) csvLine += ",\"" + it.size + "\"";
+			if (colDate) csvLine += ",\"" + new Date(it.date * 1000).toISOString() + "\"";
+			if ((showFiles && it.type === "file") || (showDirs && it.type === "dir")) {
+				plain += path + it.name + "\n";
+				json.push(jsonLine);
+				csv += csvLine + "\n";
+			}
+		}
+		let output = "";
+		if (type === "plain") output = plain;
+		else if (type === "json") output = JSON.stringify(json).replace(/},/g, "},\n").replace(/^\[/, "[\n").replace(/\]$/, "\n]");
+		else output = csv;
+		const ta = $("export-text");
+		ta.value = output;
+		ta.focus(); ta.select();
+	}
+	$("list-footer-open-export").addEventListener("click", function(){
+		$("export_checkbox_files").checked = true;
+		$("export-options-columns").classList.add("off");
+		populateExport();
+		$("export-lightbox").classList.add("open");
+		$("export-text").focus(); $("export-text").select();
+	});
+	$("export-save").addEventListener("click", function(e){
+		e.preventDefault();
+		const type = document.querySelector("#export-lightbox input[type='radio']:checked").value;
+		if (type === "plain") downloadToFile($("export-text").value, "snap2html_export.txt", "text/plain;encoding:utf-8");
+		else if (type === "json") downloadToFile($("export-text").value, "snap2html_export.json", "application/json;encoding:utf-8");
+		else downloadToFile($("export-text").value, "snap2html_export.csv", "text/csv;encoding:utf-8");
+	});
+	$("export-close").addEventListener("click", function(e){ e.preventDefault(); $("export-lightbox").classList.remove("open"); });
+	$("export-lightbox").addEventListener("click", function(e){ if (e.target === this) this.classList.remove("open"); });
+	document.querySelectorAll("#export-lightbox input[type=radio]").forEach(r => r.addEventListener("change", function(){
+		const plain = document.querySelector("#export-lightbox input[type='radio']:checked").value === "plain";
+		$("export-options-columns").classList.toggle("off", plain);
+		populateExport();
+	}));
+	document.querySelectorAll("#export-lightbox input[type=checkbox]").forEach(c => c.addEventListener("change", populateExport));
+	document.addEventListener("keyup", function(event){ if (event.code === "Escape") $("export-lightbox").classList.remove("open"); });
+
+	/* --- history navigation --- */
+	window.addEventListener("popstate", function(){
+		let folderId = location.hash.split("|")[0].replace(/#/, "");
+		if (!folderId) folderId = "0";
+		if (currentDirId !== Number(folderId)) showFolder(folderId);
+	});
+
+	/* --- startup: deep link, hash format #id|path (v2.15+; legacy format also handled) --- */
+	let startFolderId = 0;
+	if (originalHash !== "") {
+		if (originalHash.indexOf("|") !== -1) {
+			startFolderId = Number(originalHash.split("|")[0]);
+			const hashPath = decodeURIComponent(originalHash.split("|")[1]);
+			if (getRootDirRelativePath(startFolderId) !== hashPath) {
+				startFolderId = 0;
+				for (let c = 0; c < dirs.length; c++) {
+					if (hashPath === getRootDirRelativePath(c)) { startFolderId = c; break; }
+				}
+			}
+		} else {
+			const legacyHash = decodeURI(originalHash).replace(/\//g, "\\");
+			for (let c = 0; c < dirs.length; c++) {
+				if (legacyHash === getFullPath(c)) { startFolderId = c; break; }
+			}
+		}
+		if (!startFolderId && startFolderId !== 0) location.hash = "";
+	}
+	if (startFolderId) expandToFolder(startFolderId);
+	showFolder(startFolderId);
+
+	/* --- splitter (desktop) & tree drawer (mobile) --- */
+	const splitter = $("splitter"), treePane = $("tree-pane");
+	let savedWidth = null;
+	try { savedWidth = Number(localStorage.getItem("s2h-tree-width")); } catch(e) {}
+	if (savedWidth >= 160 && savedWidth <= 600) treePane.style.width = savedWidth + "px";
+	splitter.addEventListener("mousedown", function(e){
+		e.preventDefault();
+		const dragX = e.clientX, dragW = treePane.getBoundingClientRect().width;
+		splitter.classList.add("dragging");
+		document.body.style.userSelect = "none";
+		function move(ev){
+			treePane.style.width = Math.max(160, Math.min(600, dragW + ev.clientX - dragX)) + "px";
+		}
+		function up(ev){
+			document.removeEventListener("mousemove", move);
+			document.removeEventListener("mouseup", up);
+			splitter.classList.remove("dragging");
+			document.body.style.userSelect = "";
+			try { localStorage.setItem("s2h-tree-width", String(Math.max(160, Math.min(600, dragW + ev.clientX - dragX)))); } catch(err) {}
+		}
+		document.addEventListener("mousemove", move);
+		document.addEventListener("mouseup", up);
+	});
+	function closeTreeDrawer(){
+		treePane.classList.remove("open");
+		$("mobile-backdrop").classList.remove("open");
+	}
+	$("tree-btn").addEventListener("click", function(){
+		treePane.classList.toggle("open");
+		$("mobile-backdrop").classList.toggle("open", treePane.classList.contains("open"));
+	});
+	$("mobile-backdrop").addEventListener("click", closeTreeDrawer);
+
+	/* --- language toggle (if the button is present) --- */
+	function applyLangStatic(){
+		$("search_text").placeholder = t("search");
+		$("search-help").title = t("searchTip");
+		$("tree-btn").title = t("treeTip");
+		$("export-tip").textContent = t("expTip");
+		$("exp-show-label").textContent = t("expShow");
+		$("exp-cols-label").textContent = t("expCols");
+		$("export-close").innerHTML = "<b>×</b> " + t("expClose");
+		$("list-footer-open-export").textContent = t("exportView");
+		document.querySelector("label[for=export_checkbox_files]").textContent = t("expFiles");
+		document.querySelector("label[for=export_checkbox_dirs]").textContent = t("expDirs");
+		document.querySelector("label[for=export_checkbox_path]").textContent = t("expFullPath");
+		document.querySelector("label[for=export_checkbox_plain]").textContent = t("expPlain");
+		const lb = $("langBtn");
+		if (lb) { lb.textContent = lang === "zh" ? "EN" : "中文"; lb.title = lang === "zh" ? t("toEn") : t("toZh"); }
+	}
+	applyLangStatic();
+	const langBtn = $("langBtn");
+	if (langBtn) langBtn.addEventListener("click", function(){
+		lang = lang === "zh" ? "en" : "zh";
+		try { localStorage.setItem("s2h-lang", lang); } catch(e) {}
+		applyLangStatic();
+		selectedFolderId = "-1";
+		showFolder(currentDirId);   // re-render current view in the new language
+	});
+
+	$("loading").remove();
+}
+
+window.addEventListener("DOMContentLoaded", function(){
+	setTimeout(function(){ loadData(); run(); }, 1);
+});
+</script>
+<script>
+	function loadData() {
+
+		function p(d) { return dirs.push(d) }
+
+		// [SNAPDATA]
+		[DIR DATA]
+		// [/SNAPDATA]
+
+	}
+</script>
+</body>
+
+</html>
