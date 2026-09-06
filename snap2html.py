@@ -242,6 +242,9 @@ def find_template(explicit):
     here = Path(__file__).resolve().parent / "template.html"
     if here.is_file():
         return str(here)
+    bundled = Path(getattr(sys, "_MEIPASS", "")) / "template.html"  # PyInstaller 冻结环境
+    if bundled.is_file():
+        return str(bundled)
     raise GenerationError("未找到 template.html（需与 snap2html.py 同目录，或用 --template 指定）")
 
 
@@ -1487,6 +1490,8 @@ def serve_web(host, port, opts):
         print("  （如需局域网访问，加 --host 0.0.0.0 重新启动）", file=sys.stderr)
     print(f"  输出目录:   {output_dir}", file=sys.stderr)
     print("  按 Ctrl+C 停止", file=sys.stderr)
+    if opts.get("open_browser"):
+        threading.Timer(0.5, lambda: webbrowser.open(f"http://127.0.0.1:{port}/")).start()
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -1496,6 +1501,8 @@ def serve_web(host, port, opts):
 
 
 def main(argv=None):
+    if argv is None and getattr(sys, "frozen", False) and len(sys.argv) <= 1:
+        argv = ["--serve"]  # 打包版双击启动：直接进入 Web 工作台
     parser = argparse.ArgumentParser(
         prog="snap2html.py",
         description="Snap2HTML 跨平台版：把目录树生成单个可搜索的 HTML 文件清单（CLI 或 Web 界面）。",
@@ -1519,6 +1526,8 @@ def main(argv=None):
     parser.add_argument("-host", "--host", dest="host", default="127.0.0.1",
                         help="Web 服务监听地址 (默认 127.0.0.1，0.0.0.0 = 局域网可访问)")
     parser.add_argument("-port", "--port", dest="port", type=int, default=8765, help="Web 服务端口 (默认 8765)")
+    parser.add_argument("-no-browser", "--no-browser", dest="no_browser", action="store_true",
+                        help="Web 服务启动后不自动打开浏览器")
     parser.add_argument("-output-dir", "--output-dir", dest="output_dir",
                         help="Web 模式的输出目录 (默认: 脚本同目录下 output/)")
     args = parser.parse_args(argv)
@@ -1530,10 +1539,14 @@ def main(argv=None):
         pass
 
     if args.serve:
-        default_out = str(Path(__file__).resolve().parent / "output")
+        if getattr(sys, "frozen", False):
+            default_out = str(Path(sys.executable).resolve().parent / "output")
+        else:
+            default_out = str(Path(__file__).resolve().parent / "output")
         serve_web(args.host, args.port, {
             "template": args.template,
             "output_dir": args.output_dir or default_out,
+            "open_browser": not args.no_browser,
         })
         return
 

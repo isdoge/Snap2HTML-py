@@ -1,0 +1,57 @@
+name: Build release binaries
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            asset: dist/Snap2HTML-py.exe
+          - os: macos-latest
+            asset: dist/Snap2HTML-py-macos.zip
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyInstaller
+        run: pip install pyinstaller
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: >
+          pyinstaller --onefile --name "Snap2HTML-py" --icon icon.ico
+          --add-data "template.html;."
+          --add-data "template-default.html;."
+          snap2html.py
+
+      - name: Build (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          pyinstaller --onefile --name "Snap2HTML-py" \
+            --add-data "template.html:." \
+            --add-data "template-default.html:." \
+            snap2html.py
+          cd dist && zip Snap2HTML-py-macos.zip Snap2HTML-py
+
+      - name: Attach to GitHub Release (tag builds)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.asset }}
+
+      - name: Upload artifact (manual builds)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Snap2HTML-py-${{ matrix.os }}
+          path: ${{ matrix.asset }}
