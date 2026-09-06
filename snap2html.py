@@ -235,17 +235,22 @@ def scan(root, skip_hidden, skip_system, follow, progress=None):
 
 
 def find_template(explicit):
-    if explicit:
-        if not os.path.isfile(explicit):
-            raise GenerationError(f"未找到模板文件: {explicit}")
-        return explicit
-    here = Path(__file__).resolve().parent / "template.html"
-    if here.is_file():
-        return str(here)
-    bundled = Path(getattr(sys, "_MEIPASS", "")) / "template.html"  # PyInstaller 冻结环境
-    if bundled.is_file():
-        return str(bundled)
-    raise GenerationError("未找到 template.html（需与 snap2html.py 同目录，或用 --template 指定）")
+    # 候选顺序：显式指定 / 默认文件名 → 工作目录 → PyInstaller 解包目录 → 脚本目录
+    names = [explicit] if explicit else ["template.html"]
+    for name in names:
+        if os.path.isfile(name):
+            return name
+    bundled = Path(getattr(sys, "_MEIPASS", ""))  # PyInstaller 冻结环境
+    for name in names:
+        p = bundled / name
+        if p.is_file():
+            return str(p)
+    here = Path(__file__).resolve().parent
+    for name in names:
+        p = here / name
+        if p.is_file():
+            return str(p)
+    raise GenerationError(f"未找到模板文件: {', '.join(names)}（打包版已内置模板；源码运行需与 snap2html.py 同目录，或用 --template 指定）")
 
 
 def build_data_lines(root, metadata_json, ordered, indexes, subdirs):
