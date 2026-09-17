@@ -31,6 +31,16 @@ The output is fully compatible with the upstream data format (V2) and reuses the
 不想安装 Python？从 [Releases](https://github.com/isdoge/Snap2HTML-py/releases) 下载对应平台的打包版，无需任何 Python 环境：
 
 - **Windows**：`Snap2HTML-py.exe` —— 双击即启动 Web 工作台（自动打开浏览器）；关闭窗口即停止服务。命令行用法与源码版完全一致。
+- **Linux x86_64**：`Snap2HTML-py-linux-x86_64.tar.gz` —— 解压后直接运行 `./Snap2HTML-py`，无需安装 Python：
+
+  ```bash
+  tar -xzf Snap2HTML-py-linux-x86_64.tar.gz
+  chmod +x Snap2HTML-py
+  ./Snap2HTML-py
+  ```
+
+  无参数运行自动进入 Web 工作台；CLI 参数与 Python 源码版保持一致。
+- **Linux ARM64**：`Snap2HTML-py-linux-aarch64.tar.gz` —— Oracle Cloud ARM / AWS Graviton / 树莓派等 ARM64 Linux 使用（x86_64 包无法在 ARM64 机器上运行）；解压运行方式同上，把文件名换成 aarch64 即可。
 - **macOS**：`Snap2HTML-py-macos.zip` —— 解压后在终端运行 `./Snap2HTML-py`（首次运行需 `chmod +x Snap2HTML-py`）。
 
 无需安装 Python 的打包版由 GitHub Actions 在每次发版时自动构建。
@@ -38,6 +48,16 @@ The output is fully compatible with the upstream data format (V2) and reuses the
 Don't want to install Python? Grab the packaged build for your platform from the [Releases](https://github.com/isdoge/Snap2HTML-py/releases) page — no Python environment needed:
 
 - **Windows**: `Snap2HTML-py.exe` — double-click to start the web workbench (opens your browser automatically); closing the window stops the service. The command-line usage is identical to the source version.
+- **Linux x86_64**: `Snap2HTML-py-linux-x86_64.tar.gz` — extract and run `./Snap2HTML-py` directly, no Python needed:
+
+  ```bash
+  tar -xzf Snap2HTML-py-linux-x86_64.tar.gz
+  chmod +x Snap2HTML-py
+  ./Snap2HTML-py
+  ```
+
+  Running with no arguments starts the web workbench automatically; CLI arguments are identical to the Python source version.
+- **Linux ARM64**: `Snap2HTML-py-linux-aarch64.tar.gz` — for Oracle Cloud ARM / AWS Graviton / Raspberry Pi and other ARM64 Linux machines (the x86_64 package cannot run on ARM64); extract and run the same way, just swap the filename for aarch64.
 - **macOS**: `Snap2HTML-py-macos.zip` — unzip and run `./Snap2HTML-py` in a terminal (run `chmod +x Snap2HTML-py` the first time).
 
 The dependency-free builds are produced automatically by GitHub Actions on every release.

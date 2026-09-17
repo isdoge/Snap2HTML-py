@@ -13,6 +13,12 @@ jobs:
         include:
           - os: windows-latest
             asset: dist/Snap2HTML-py.exe
+          - os: ubuntu-22.04
+            asset: dist/Snap2HTML-py-linux-x86_64.tar.gz
+            linux_arch: x86_64
+          - os: ubuntu-22.04-arm
+            asset: dist/Snap2HTML-py-linux-aarch64.tar.gz
+            linux_arch: aarch64
           - os: macos-latest
             asset: dist/Snap2HTML-py-macos.zip
     runs-on: ${{ matrix.os }}
@@ -34,6 +40,18 @@ jobs:
           --add-data "template.html;."
           --add-data "template-default.html;."
           snap2html.py
+
+      - name: Build (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          pyinstaller --onefile --name "Snap2HTML-py" \
+            --add-data "template.html:." \
+            --add-data "template-default.html:." \
+            snap2html.py
+
+          cd dist
+          chmod +x Snap2HTML-py
+          tar -czf Snap2HTML-py-linux-${{ matrix.linux_arch }}.tar.gz Snap2HTML-py
 
       - name: Build (macOS)
         if: runner.os == 'macOS'
